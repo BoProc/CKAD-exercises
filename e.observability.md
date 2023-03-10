@@ -1,4 +1,5 @@
 ![](https://gaforgithub.azurewebsites.net/api?repo=CKAD-exercises/observability&empty)
+
 # Observability (18%)
 
 ## Liveness, readiness and startup probes
@@ -90,7 +91,7 @@ kubectl delete -f pod.yaml
 </p>
 </details>
 
-### Create an nginx pod (that includes port 80) with an HTTP readinessProbe on path '/' on port 80. Again, run it, check the readinessProbe, delete it.
+### Create an nginx pod with an HTTP readinessProbe on path '/' on port 80. Again, run it, check the readinessProbe, delete it.
 
 <details><summary>show</summary>
 <p>
@@ -114,12 +115,10 @@ spec:
     imagePullPolicy: IfNotPresent
     name: nginx
     resources: {}
-    ports:
-      - containerPort: 80 # Note: Readiness probes runs on the container during its whole lifecycle. Since nginx exposes 80, containerPort: 80 is not required for readiness to work.
     readinessProbe: # declare the readiness probe
       httpGet: # add this line
         path: / #
-        port: 80 #
+        port: 80 # Since nginx exposes 80, exposing containerPort: 80 is not required for readiness to work.
   dnsPolicy: ClusterFirst
   restartPolicy: Never
 status: {}
@@ -134,12 +133,13 @@ kubectl delete -f pod.yaml
 </p>
 </details>
 
-### Lots of pods are running in `qa`,`alan`,`test`,`production` namespaces.  All of these pods are configured with liveness probe.  Please list all pods whose liveness probe are failed in the format of `<namespace>/<pod name>` per line.
+### Lots of pods are running in `qa`,`alan`,`test`,`production` namespaces. All of these pods are configured with liveness probe. Please list all pods whose liveness probe are failed in the format of `<namespace>/<pod name>` per line.
 
 <details><summary>show</summary>
 <p>
 
 A typical liveness probe failure event
+
 ```
 LAST SEEN   TYPE      REASON      OBJECT              MESSAGE
 22m         Warning   Unhealthy   pod/liveness-exec   Liveness probe failed: cat: can't open '/tmp/healthy': No such file or directory
@@ -203,7 +203,6 @@ kubectl delete po busybox --force --grace-period=0
 
 </p>
 </details>
-
 
 ### Get CPU/memory utilization for nodes ([metrics-server](https://github.com/kubernetes-incubator/metrics-server) must be running)
 
